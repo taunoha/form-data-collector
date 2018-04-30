@@ -1,0 +1,11 @@
+.column-entry_id {
+    > a {
+        float: left;
+    }
+
+    > .row-actions {
+        float: left;
+        margin-top: -1px;
+        margin-left: 15px;
+    }
+}
