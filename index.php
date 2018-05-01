@@ -71,6 +71,11 @@ class Form_Data_Collector
     public function admin_notices()
     {
         $notices = array();
+        $screen = get_current_screen();
+
+        if( $screen->id != 'toplevel_page_fdc_entries' ) {
+            return;
+        }
 
         if( !has_action('fdc_thickbox_iframe_content') ) {
             $notices[]= __('Before you can start using this plugin first define fields that are allowed to store in databaase. <br>Use <b>fdc_allowed_entry_fields</b> filter. How to do that look at <em>/plugins/form-data-collector/example/example-functions.php </em>');
