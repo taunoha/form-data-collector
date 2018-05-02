@@ -123,4 +123,10 @@ function fdc_get_entry_meta($entry_id, $meta_key = '')
     if( !empty($meta_key) && isset($meta_values[$meta_key]) ) {
         return $meta_values[$meta_key];
     }
+
+    if( !empty($meta_key) ) {
+        return '';
+    } else {
+        return array();
+    }
 }
