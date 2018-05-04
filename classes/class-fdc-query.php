@@ -172,7 +172,9 @@ class FDC_Query
             $limit = 'LIMIT ' . $args['entries_per_page'];
         }
 
-        if( 'yes' !== $args['entry_deleted'] ) {
+        if( 'yes' == $args['entry_deleted'] ) {
+            $wheres[] = 'AND entry_deleted IN ("yes")';
+        } else {
             $wheres[] = 'AND entry_deleted NOT IN ("yes")';
         }
 
