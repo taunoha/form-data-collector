@@ -3,7 +3,7 @@
  *  Plugin Name: Form Data Collector
  *  Plugin URI: https://www.loomdigital.ee/
  *  Description: This plugin is a developer's tookit for collecting form data from your WordPress site
- *  Version: 2.0.0
+ *  Version: 2.1.0
  *  Author: LOOM Digital
  *  Author URI: https://www.loomdigital.ee/
  *  License: GPL2+
@@ -81,8 +81,8 @@ class Form_Data_Collector
             $notices[]= __('Before you can start using this plugin first define fields that are allowed to store in databaase. <br>Use <b>fdc_allowed_entry_fields</b> filter. How to do that look at <em>/plugins/form-data-collector/example/example-functions.php </em>');
         }
 
-        if( !has_filter('fdc_pre_save_entry_post_data') ) {
-            $notices[]= __('Validate user input by using <b>fdc_pre_save_entry_post_data</b> filter.<br>By default all input fields are considered as textarea fields and will be filtered accordingly before stored in database. How to do that look at <em>/plugins/form-data-collector/example/example-functions.php </em>');
+        if( !!( !has_filter('fdc_pre_save_entry_post_data') && !has_filter('fdc_pre_save_entry_data')) ) {
+            $notices[]= __('Validate user input by using <b>fdc_pre_save_entry_data</b> filter.<br>By default all input fields are considered as textarea fields and will be filtered accordingly before stored in database. How to do that look at <em>/plugins/form-data-collector/example/example-functions.php </em>');
         }
 
         if( !empty($notices) )

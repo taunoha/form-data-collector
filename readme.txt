@@ -4,7 +4,7 @@ Donate link: https://www.loomdigital.ee
 Tags: form, email, forms, input, ajax, database
 Requires at least: 4.9
 Tested up to: 4.9.5
-Stable tag: 2.0.1
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,6 +17,10 @@ This plugin is a developer’s toolkit for collecting form data from your WordPr
 
 The best way to get started is look at example-functions.php and example.php in `/plugins/form-data-collector/example` folder.
 
+You can see a list of utilities [here](https://github.com/taunoha/form-data-collector/wiki/Utilities).
+
+**Not compatible with 1.x.x versions :(**
+
 == Installation ==
 
 1. Go to your admin area and select Plugins -> Add new from the menu.
@@ -26,6 +30,12 @@ The best way to get started is look at example-functions.php and example.php in 
 5. A new menu item called "FDC" will be available in Admin menu.
 
 == Changelog ==
+
+= 2.1.0 =
+* Introduced `fdc_pre_get_entries` action hook. It works like Wordpress core `pre_get_posts` action.
+* `fdc_get_entries()` now accepts meta_query as parameter. It works similarly to [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query#Custom_Field_Parameters) meta_query parameter.
+* `fdc_get_entries()` now accepts date_query as parameter. It works similarly to [WP_Query](https://codex.wordpress.org/Class_Reference/WP_Query#Date_Parameters) date_query parameter.
+* `fdc_get_entries()` the parameter `entry_date_after` was replaced with the `date_query` parameter.
 
 = 2.0.1 =
 * Minor bug fixes

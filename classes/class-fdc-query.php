@@ -4,7 +4,8 @@ defined('ABSPATH') or die();
 
 class FDC_Query
 {
-    public $entries;
+    public $entries = array();
+    public $query_vars = array();
 
     public function __construct( $args = array() )
     {
@@ -14,11 +15,15 @@ class FDC_Query
         }
     }
 
+    public function set($query_var, $value) {
+        $this->query_vars[$query_var] = $value;
+    }
+
     public function insert($args = array())
     {
         global $wpdb;
 
-        if( false === $args ) {
+        if( empty($args) ) {
             return 0;
         }
 
@@ -102,22 +107,7 @@ class FDC_Query
 
     public function search($s = '')
     {
-        global $wpdb;
-
-        $table_name = $wpdb->prefix . 'fdc_entries';
-        $table_meta_name = $wpdb->prefix . 'fdc_entries_meta';
-        $phrase = esc_sql($s);
-
-        $sql = apply_filters('fdc_entries_search_sql', "SELECT DISTINCT {$table_name}.ID FROM {$table_name} LEFT JOIN {$table_meta_name} ON {$table_name}.ID = {$table_meta_name}.entry_id WHERE {$table_meta_name}.meta_value LIKE '%{$phrase}%' ORDER BY entry_date DESC");
-        $results = $wpdb->get_results($sql, ARRAY_A);
-
-        if( !empty($results) )
-        {
-            $ids = wp_list_pluck($results, 'ID');
-            return $this->get(array('entry__in' => $ids));
-        }
-
-        return 0;
+        return $this->get( array('s' => $s) );
     }
 
     public function get($args = array())
@@ -128,20 +118,59 @@ class FDC_Query
             'ID' => '*',
             'entry__in' => array(),
             'blog_id' => get_current_blog_id(),
-            'entry_date_after' => '*',
             'entry_deleted' => '',
-            'entries_per_page' => '',
+            'entries_per_page' => -1,
+            'offset' => 0,
+            'meta_query' => array(),
+            'date_query' => array(),
             's' => ''
         );
-        $args = wp_parse_args($args, $defaults);
+        $this->query_vars = wp_parse_args($args, $defaults);
 
-        if( !empty($args['s']) ) {
-            return $this->search($args['s']);
+        do_action_ref_array('fdc_pre_get_entries', array(&$this));
+
+        $args = &$this->query_vars;
+
+        if( !empty($args['s']) )
+        {
+            $args['meta_query']= array_merge($args['meta_query'], array(
+                array(
+                    'value' => sanitize_text_field($args['s']),
+                    'compare' => 'LIKE'
+                )
+            ));
         }
 
         $limit = '';
+        $offset = '';
         $where = '';
+        $join = '';
         $wheres = array();
+        $joins = array();
+
+        if( !empty($args['meta_query']) )
+        {
+            $meta_query_clauses = fdc_get_entries_meta_query_clauses( array('meta_query' => $args['meta_query']) );
+
+            if( isset($meta_query_clauses['join']) ) {
+                $joins[] = $meta_query_clauses['join'];
+            }
+
+            if( isset($meta_query_clauses['where']) ) {
+                $wheres[] = $meta_query_clauses['where'];
+            }
+
+            unset($meta_query_clauses);
+
+        }
+
+        if( !empty($args['date_query']) )
+        {
+            $date_query = new WP_Date_Query( array($args['date_query']), $wpdb->prefix . 'fdc_entries.entry_date' );
+            $wheres[]= $date_query->get_sql();
+
+            unset($date_query);
+        }
 
         if( intval($args['ID']) ) {
             $wheres[] = 'AND ID = ' . (int) $args['ID'];
@@ -159,27 +188,23 @@ class FDC_Query
             }
         }
 
-        if( !empty($args['entry_date_after']) && '*' != $args['entry_date_after'] )
-        {
-            $datetime = @new DateTime($args['entry_date_after']);
-
-            if( $datetime instanceOf DateTime ) {
-                $wheres[] = 'AND entry_date_after >= "' . $datetime->format('Y-m-01 00:00') . '"';
-            }
+        if( $args['entries_per_page'] > -1 ) {
+            $limit = 'LIMIT ' . absint($args['entries_per_page']);
         }
 
-        if( !empty($args['entries_per_page']) ) {
-            $limit = 'LIMIT ' . $args['entries_per_page'];
+        if( absint($args['offset']) > 0 ) {
+            $offset = 'OFFSET ' . absint($args['offset']);
         }
 
-        if( 'yes' == $args['entry_deleted'] ) {
+        if( 'yes' == strtolower($args['entry_deleted']) ) {
             $wheres[] = 'AND entry_deleted IN ("yes")';
         } else {
             $wheres[] = 'AND entry_deleted NOT IN ("yes")';
         }
 
+        $join = implode(' ', $joins);
         $where = implode(' ', $wheres);
-        $sql = apply_filters('fdc_entries_request_sql', "SELECT * FROM {$wpdb->prefix}fdc_entries WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit}");
+        $sql = apply_filters('fdc_entries_request_sql', "SELECT {$wpdb->prefix}fdc_entries.* FROM {$wpdb->prefix}fdc_entries {$join} WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit} {$offset}");
         $results = $wpdb->get_results($sql, ARRAY_A);
 
         if( $results )
@@ -189,7 +214,7 @@ class FDC_Query
             });
 
             foreach( $results as $key => $result ) {
-                $results[$key]['meta']= fdc_get_entry_meta($result['ID']);
+                $results[$key]['meta']= fdc_get_entry_meta($result['ID'], null, $this);
             }
 
             return $results;
@@ -199,7 +224,6 @@ class FDC_Query
     }
 
 }
-
 
 function fdc_insert_entry($data = array())
 {
@@ -225,8 +249,10 @@ function fdc_insert_entry($data = array())
     $data = array_intersect_key($data, array_flip($allowed_fields));
 
     if( has_filter('fdc_pre_save_entry_post_data') ) {
-
         $data = apply_filters('fdc_pre_save_entry_post_data', $data);
+
+    } else if( has_filter('fdc_pre_save_entry_data') ) {
+        $data = apply_filters('fdc_pre_save_entry_data', $data);
 
     } else {
 
@@ -235,7 +261,6 @@ function fdc_insert_entry($data = array())
         }
 
     }
-
 
     if( empty($data) ) {
         return 0;
@@ -250,8 +275,11 @@ function fdc_insert_entry($data = array())
 
     if( !empty($entry_id) )
     {
-        foreach( $data as $meta_key => $meta_value ) {
-            fdc_add_entry_meta($entry_id, $meta_key, $meta_value);
+        foreach( $data as $meta_key => $meta_value )
+        {
+            if( in_array($meta_key, $allowed_fields) ) {
+                fdc_add_entry_meta($entry_id, $meta_key, $meta_value);
+            }
         }
 
         if( isset($_FILES) && !empty($_FILES) )
@@ -328,6 +356,8 @@ function fdc_delete_entry($entry_id)
     }
 
     do_action('fdc_after_entry_deleted', $entry_id, $entry);
+
+    wp_cache_delete($entry_id, 'fdc_entry_metadata');
 
     return $entry_id;
 }

@@ -32,7 +32,7 @@ function fdc_entry_labels($key = '')
     return $labels;
 }
 
-function fdc_pre_save_entry_post_data_callback($data)
+function fdc_pre_save_entry_data_callback($data)
 {
     foreach( $data as $key => $value )
     {
@@ -48,7 +48,7 @@ function fdc_pre_save_entry_post_data_callback($data)
 
     return $data;
 }
-add_filter('fdc_pre_save_entry_post_data', 'fdc_pre_save_entry_post_data_callback');
+add_filter('fdc_pre_save_entry_data', 'fdc_pre_save_entry_data_callback');
 
 function fdc_allowed_entry_fields_callback($allowed_fields, $data)
 {

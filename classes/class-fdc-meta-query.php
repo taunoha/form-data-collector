@@ -2,12 +2,38 @@
 
 defined('ABSPATH') or die();
 
-class FDC_Meta_Query
+class FDC_Meta_Query extends WP_Meta_Query
 {
-    public function __construct()
+    public function get_sql( $type, $primary_table, $primary_id_column, $context = null )
     {
+        global $wpdb;
 
+        $this->table_aliases = array();
+
+        $this->meta_table = $wpdb->prefix . 'fdc_entries_meta';
+        $this->meta_id_column = sanitize_key($type . '_id');
+
+        $this->primary_table = $primary_table;
+        $this->primary_id_column = $primary_id_column;
+
+        $sql = $this->get_sql_clauses();
+
+        if( false !== strpos($sql['join'], 'LEFT JOIN') ) {
+            $sql['join'] = str_replace('INNER JOIN', 'LEFT JOIN', $sql['join']);
+        }
+
+        return apply_filters_ref_array('get_meta_sql', array($sql, $this->queries, $type, $primary_table, $primary_id_column, $context));
     }
+}
+
+function fdc_get_entries_meta_query_clauses( $query_args = array() )
+{
+    global $wpdb;
+
+    $meta_query = new FDC_Meta_Query();
+    $meta_query->parse_query_vars($query_args);
+
+    return $meta_query->get_sql('entry', $wpdb->prefix . 'fdc_entries', 'ID', null);
 }
 
 function fdc_add_entry_meta($entry_id, $meta_key, $meta_value)
@@ -87,7 +113,7 @@ function fdc_update_entry_meta($entry_id, $meta_key, $meta_value)
     return (int) $wpdb->insert_id;
 }
 
-function fdc_get_entry_meta($entry_id, $meta_key = '')
+function fdc_get_entry_meta($entry_id, $meta_key = '', $context = null)
 {
     global $wpdb;
 
@@ -101,12 +127,19 @@ function fdc_get_entry_meta($entry_id, $meta_key = '')
         return false;
     }
 
+    $table_name = $wpdb->prefix . 'fdc_entries';
     $table_meta_name = $wpdb->prefix . 'fdc_entries_meta';
     $meta_values = wp_cache_get($entry_id, 'fdc_entry_metadata');
 
     if( false === $meta_values )
     {
-        $meta_values = $wpdb->get_results( $wpdb->prepare("SELECT meta_key, meta_value FROM {$table_meta_name} WHERE entry_id = %d", $entry_id) );
+        $exclude_deleted = "AND entry_id NOT IN ( SELECT {$table_name}.ID FROM $table_name WHERE ID = entry_id AND entry_deleted IN ('yes') )";
+
+        if( $context instanceof FDC_Query && 'yes' == strtolower($context->query_vars['entry_deleted']) ) {
+            $exclude_deleted = '';
+        }
+
+        $meta_values = $wpdb->get_results( $wpdb->prepare("SELECT meta_key, meta_value FROM {$table_meta_name} WHERE entry_id = %d {$exclude_deleted}", $entry_id) );
         $data = wp_list_pluck($meta_values, 'meta_value', 'meta_key');
         $meta_values = array_map('maybe_unserialize', $data);
         wp_cache_set($entry_id, $meta_values, 'fdc_entry_metadata');
