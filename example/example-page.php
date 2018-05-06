@@ -34,6 +34,9 @@
                 e.preventDefault();
 
                 fdc.ajax.post($form, {
+                    error: function(data) {
+                        console.log(data);
+                    },
                     success: function(data) {
                         console.log(data);
                     }
