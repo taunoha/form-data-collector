@@ -30,8 +30,21 @@ class FDC_List_Table extends WP_List_Table
 
     function extra_tablenav($which)
     {
-        if ( 'top' === $which ) {
+        if ( 'top' === $which )
+        {
+            echo '<div class="alignleft actions">';
+
+            ob_start();
             do_action('fdc_restrict_manage_entries');
+            $output = ob_get_clean();
+
+            if( !empty($output) )
+            {
+                echo $output;
+                submit_button( __('Filter', 'fdc'), 'button', 'fdc_filter_actions', false, array('id' => 'fdc-filter-actions'));
+            }
+
+            echo '</div>';
         }
     }
 

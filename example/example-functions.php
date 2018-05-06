@@ -90,6 +90,30 @@ function fdc_manage_entries_custom_column_callback($item, $column_name)
 }
 add_action('fdc_manage_entries_custom_column', 'fdc_manage_entries_custom_column_callback', 10, 2);
 
+function fdc_restrict_manage_entries_callback()
+{
+    echo '<select name="formID">';
+    echo '<option value="">All Forms</option>';
+    echo '<option value="feedback" ' . selected(@$_GET['formID'], 'feedback', false) . '>Feedback</option>';
+    echo '</select>';
+}
+add_action('fdc_restrict_manage_entries', 'fdc_restrict_manage_entries_callback');
+
+function fdc_pre_get_entries_callback($query)
+{
+
+    if( isset($_GET['formID']) && !empty($_GET['formID']) )
+    {
+        $query->set('meta_query', array(
+            array(
+                'key' => 'formID',
+                'value' => sanitize_text_field($_GET['formID'])
+            )
+        ));
+    }
+}
+add_action('fdc_pre_get_entries', 'fdc_pre_get_entries_callback');
+
 function fdc_thickbox_iframe_content_callback($entry_id, $entry_data)
 {
     $data = $entry_data;
