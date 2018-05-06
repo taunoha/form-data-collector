@@ -139,6 +139,6 @@ add_action('fdc_thickbox_iframe_content', 'fdc_thickbox_iframe_content_callback'
 
 function fdc_after_entry_inserted_callback($entry_id)
 {
-
+    $meta = fdc_get_entry_meta($entry_id);
 }
 add_action('fdc_after_entry_inserted', 'fdc_after_entry_inserted_callback', 10);
