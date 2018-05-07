@@ -51,6 +51,7 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 * Renamed `restrict_manage_px_fdc` action hook to `fdc_restrict_manage_entries`
 * Removed CMB2
 * Bootstrap Modal was replaced with Thickbox
+* Started using semantic versioning
 
 ### 1.3.1
 * Updated CMB2 code
