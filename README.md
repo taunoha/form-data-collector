@@ -1,12 +1,12 @@
 # Form Data Collector
 
-**Contributors:** taunoh
-**Donate link:** https://www.loomdigital.ee
-**Tags:** form, email, forms, input, ajax, database
-**Requires at least:** 4.9
-**Tested up to:** 4.9.5
-**Stable tag:** 2.1.0
-**License:** GPLv2 or later
+**Contributors:** taunoh<br>
+**Donate link:** https://www.loomdigital.ee<br>
+**Tags:** form, email, forms, input, ajax, database<br>
+**Requires at least:** 4.9<br>
+**Tested up to:** 4.9.5<br>
+**Stable tag:** 2.1.0<br>
+**License:** GPLv2 or later<br>
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
 This plugin will help you to collect and store form data.
