@@ -16,7 +16,7 @@ This plugin will help you to collect and store form data.
 
 This plugin is a developer’s toolkit for collecting form data from your WordPress site. It provides the necessary hooks and utilities for you to manage how data is stored and displayed later.
 
-The best way to get started is to look at example-functions.php and example.php in `/plugins/form-data-collector/example` folder.
+The best way to get started is to look at [example-functions.php](https://github.com/taunoha/form-data-collector/blob/master/example/example-functions.php) and [example.php](https://github.com/taunoha/form-data-collector/blob/master/example/example-page.php) in `/plugins/form-data-collector/example` folder.
 
 You can see a list of utilities and hooks [here](https://github.com/taunoha/form-data-collector/wiki/).
 
