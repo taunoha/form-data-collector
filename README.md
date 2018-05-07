@@ -1,4 +1,5 @@
 # Form Data Collector
+
 **Contributors:** taunoh
 **Donate link:** https://www.loomdigital.ee
 **Tags:** form, email, forms, input, ajax, database
