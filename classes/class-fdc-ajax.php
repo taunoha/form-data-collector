@@ -35,7 +35,7 @@ class FDC_AJAX
         {
             $entry_id = fdc_delete_entry((int)$_POST['id']);
 
-            if( empty($entry_id) ) {
+            if( is_wp_error($entry_id) || empty($entry_id) ) {
                  wp_send_json_error( apply_filters('fdc_entry_after_delete_error_response', $entry_id) );
             }
 
@@ -48,7 +48,7 @@ class FDC_AJAX
 
         $entry_id = fdc_insert_entry();
 
-        if( empty($entry_id) ) {
+        if( is_wp_error($entry_id) || empty($entry_id) ) {
             wp_send_json_error( apply_filters('fdc_entry_after_save_error_response', $entry_id) );
         }
 

@@ -258,12 +258,12 @@ function fdc_insert_entry($data = array())
 
     }
 
-    if( empty($data) ) {
-        return 0;
-    }
-
     if( is_wp_error($data) ) {
         return $data;
+    }
+
+    if( empty($data) ) {
+        return 0;
     }
 
     $query = new FDC_Query();
