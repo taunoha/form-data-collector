@@ -4,7 +4,7 @@ Donate link: https://www.loomdigital.ee
 Tags: form, email, forms, input, ajax, database
 Requires at least: 4.9
 Tested up to: 4.9.5
-Stable tag: 2.1.0
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,13 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 5. A new menu item called "FDC" will be available in Admin menu.
 
 == Changelog ==
+
+= 2.2.0 =
+* Added an option to force delete entry and all its data.
+* Improved error handling. Take a look at the example files.
+
+= 2.1.1 =
+* Minor bug fixes
 
 = 2.1.0 =
 * Introduced `fdc_pre_get_entries` action hook. It works like Wordpress core `pre_get_posts` action.
