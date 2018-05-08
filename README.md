@@ -5,7 +5,7 @@
 **Tags:** form, email, forms, input, ajax, database<br>
 **Requires at least:** 4.9<br>
 **Tested up to:** 4.9.5<br>
-**Stable tag:** 2.1.0<br>
+**Stable tag:** 2.1.1<br>
 **License:** GPLv2 or later<br>
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 

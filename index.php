@@ -3,7 +3,7 @@
  *  Plugin Name: Form Data Collector
  *  Plugin URI: https://www.loomdigital.ee/
  *  Description: This plugin is a developer's tookit for collecting form data from your WordPress site
- *  Version: 2.1.0
+ *  Version: 2.1.1
  *  Author: LOOM Digital
  *  Author URI: https://www.loomdigital.ee/
  *  License: GPL2+
