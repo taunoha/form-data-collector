@@ -23,10 +23,6 @@ class FDC_Query
     {
         global $wpdb;
 
-        if( empty($args) ) {
-            return 0;
-        }
-
         $defaults = array(
             'ID' => 0,
             'blog_id' => '',
