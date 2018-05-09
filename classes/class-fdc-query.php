@@ -227,9 +227,9 @@ class FDC_Query
  * @since 2.2.0                     Improved error handling
  * @since 2.0.0
  *
- * @param array                     Data to store in database or $_POST will be used.
+ * @param array $data               Data to store in database or $_POST will be used.
  *
- * @return int|WP_Error
+ * @return int|WP_Error             Return inserted entry ID or WP_Error.
  *
  */
 function fdc_insert_entry($data = array())
@@ -262,7 +262,7 @@ function fdc_insert_entry($data = array())
         /**
          * Filter entry data before storing in database
          *
-         * @since 2.2.0                     Added option to return WP_Error
+         * @since 2.2.0                     Added an option to return WP_Error
          * @since 2.0.0
          *
          * @param array                     Data to be filtered
