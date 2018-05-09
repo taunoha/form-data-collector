@@ -248,6 +248,19 @@ function fdc_insert_entry($data = array())
         $data = apply_filters('fdc_pre_save_entry_post_data', $data);
 
     } else if( has_filter('fdc_pre_save_entry_data') ) {
+        /**
+         * Filter entry data before storing in database
+         *
+         * @since 2.2.0                     Added option to return WP_Error
+         * @since 2.0.0
+         *
+         * @param array                     Data to be filtered
+         *
+         * @return array|null|WP_Error      Return filtered data, NULL or WP_Error.
+         *                                  By returning WP_Error you can add validation errors to
+         *                                  the respons that will be send to the browser.
+         *
+         */
         $data = apply_filters('fdc_pre_save_entry_data', $data);
 
     } else {
@@ -263,7 +276,7 @@ function fdc_insert_entry($data = array())
     }
 
     if( empty($data) ) {
-        return 0;
+        return new WP_Error('data-missing', __('Nothing to store in database. No data to store in database.', 'fdc'));
     }
 
     $query = new FDC_Query();
@@ -328,7 +341,7 @@ function fdc_insert_entry($data = array())
         return $entry_id;
     }
 
-    return 0;
+    return new WP_Error('data-insertion-error', __('Unknown error occurred. No entry stored in database.', 'fdc'));
 }
 
 function fdc_get_entries($args = array())
@@ -342,13 +355,25 @@ function fdc_get_entries($args = array())
     return empty($query->entries) ? array() : $query->entries;
 }
 
-function fdc_delete_entry($entry_id)
+/**
+ * Filter entry data before storing in database
+ *
+ * @since 2.2.0             Return WP_Error if some error occurred.
+ * @since 2.0.0
+ *
+ * @param int
+ * @param bool  $force      An option to force delete the entry and all its data. Default is 'false';
+ *
+ * @return int|WP_Error     Return deleted entry ID or WP_Error.
+ *
+ */
+function fdc_delete_entry($entry_id, $force = false)
 {
     $query = new FDC_Query();
     $entry = $query->delete($entry_id);
 
     if( empty($entry) ) {
-        return 0;
+        return new WP_Error('data-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
     }
 
     do_action('fdc_after_entry_deleted', $entry_id, $entry);
