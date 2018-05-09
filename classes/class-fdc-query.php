@@ -221,6 +221,17 @@ class FDC_Query
 
 }
 
+/**
+ * Insert an entry into the database
+ *
+ * @since 2.2.0                     Improved error handling
+ * @since 2.0.0
+ *
+ * @param array                     Data to store in database or $_POST will be used.
+ *
+ * @return int|WP_Error
+ *
+ */
 function fdc_insert_entry($data = array())
 {
     if( empty($data) )
@@ -228,7 +239,7 @@ function fdc_insert_entry($data = array())
         if( isset($_POST) ) {
             $data = $_POST;
         } else {
-            return 0;
+            return new WP_Error('data-missing', __('Nothing to store in database.', 'fdc'));
         }
     }
 
@@ -239,7 +250,7 @@ function fdc_insert_entry($data = array())
     $allowed_fields = apply_filters('fdc_allowed_entry_fields', null, $data);
 
     if( null == $allowed_fields ) {
-        return 0;
+        return new WP_Error('allowed-fields-missing', __('No allowed fields found', 'fdc'));
     }
 
     $data = array_intersect_key($data, array_flip($allowed_fields));
@@ -257,8 +268,7 @@ function fdc_insert_entry($data = array())
          * @param array                     Data to be filtered
          *
          * @return array|null|WP_Error      Return filtered data, NULL or WP_Error.
-         *                                  By returning WP_Error you can add validation errors to
-         *                                  the respons that will be send to the browser.
+         *                                  By returning WP_Error you can add validation errors.
          *
          */
         $data = apply_filters('fdc_pre_save_entry_data', $data);
@@ -276,7 +286,7 @@ function fdc_insert_entry($data = array())
     }
 
     if( empty($data) ) {
-        return new WP_Error('data-missing', __('Nothing to store in database. No data to store in database.', 'fdc'));
+        return new WP_Error('data-missing', __('Nothing to store in database.', 'fdc'));
     }
 
     $query = new FDC_Query();
