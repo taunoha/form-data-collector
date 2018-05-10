@@ -32,7 +32,7 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 == Changelog ==
 
 = 2.2.0 =
-* Added an option to force delete entry and all its data.
+* Added an option to force delete an entry and all its data.
 * Improved error handling. Take a look at the example files.
 
 = 2.1.1 =
@@ -57,37 +57,3 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 * Renamed `restrict_manage_px_fdc` action hook to `fdc_restrict_manage_entries`
 * Removed CMB2
 * Bootstrap Modal was replaced with Thickbox
-
-= 1.3.1 =
-* Updated CMB2 code
-
-= 1.3.0 =
-* NEW: Now you can store all fields as one meta_key value and still use get_post_meta() to access them. Use the `fdc_store_fields_as_array` filter to enable this feature (Default: false).
-* Added action `fdc_overview_details_before_output`
-* added action `fdc_overview_details_after_output`
-* Updated usage info
-
-= 1.2.0 =
-* Introduced AJAX utility `fdc.ajax.post()` to send POST request to WordPress
-* Added filter `fdc_ajax_response_error` to filter AJAX error response
-* Added filter `fdc_ajax_response_success` to filter AJAX success response
-* Added filter `fdc_enable_email_settings` to enable or disable email settings subpage (Default: true)
-* Code clean up
-
-= 1.1.3 =
-* Added 'CMB2_LOADED' constant check
-
-= 1.1.2 =
-* WP_List_Table Class check is now in admin_init hook
-* Minor updates
-
-= 1.1.1 =
-* Updated usage info and some text in code.
-* Added loading state to Entry modal.
-
-= 1.1 =
-* Added `restrict_manage_px_fdc` action hook. Now you can add restriction filters to the Entries view. Combine this hook with `parse_query` filter to manage the output of Entries list.
-* Added date column in the Entries view is now displayed by default.
-
-= 1.0 =
-* Initial release.

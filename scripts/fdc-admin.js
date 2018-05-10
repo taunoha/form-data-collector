@@ -20,11 +20,51 @@ jQuery(function($) {
             }
         },
         toDelete: function() {
-            if( window.confirm("Do you really want to delete this entry?") ) {
-                $.post(ajaxurl, { action: 'fdc_action', check: _fdcVars.ajax.nonce, id: FDC.itemID, cmd: FDC.action, fdcUtility: true }, function(data) {
-                    FDC.$target.closest('tr').fadeOut();
-                });
-            }
+            $('#fdc-modal').dialog({
+                dialogClass: 'wp-dialog',
+                modal: true,
+                height: 'auto',
+                width: 400,
+                resizable: false,
+                buttons: [
+                    {
+                        text: _fdcVars.str.delete_this_entry,
+                        click: function() {
+                            var $self = $(this);
+                            var forceDelete = $self.find('input[name="fdcForceDelete"]').first().prop('checked');
+
+                            wp.ajax.send('fdc_action', {
+                                data: {
+                                    check: _fdcVars.ajax.nonce,
+                                    id: FDC.itemID,
+                                    cmd: FDC.action,
+                                    force: forceDelete,
+                                    fdcUtility: true
+                                },
+                                success: function(data) {
+                                    FDC.$target.closest('tr').fadeOut();
+                                    $self.dialog('close');
+                                    $self.find('.notice-warning').remove();
+                                    $self.find('form').get(0).reset();
+                                },
+                                error: function(data) {
+                                    $self.find('.notice-warning').remove();
+                                    $self.find('form').first().append('<div class="notice notice-warning" style="margin: 0; background-color: #fbf8ee"><p>' + data + '</p></div>');
+                                }
+                            });
+
+                        }
+                    },
+                    {
+                        text: _fdcVars.str.cancel,
+                        click: function() {
+                            $(this).dialog('close');
+                            $(this).find('form').get(0).reset();
+                            $(this).find('.notice-warning').remove();
+                        }
+                    }
+                ]
+            });
         },
     };
 

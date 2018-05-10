@@ -89,7 +89,7 @@ class FDC_Query
         return 0;
     }
 
-    public function delete($entry_id = 0)
+    public function delete($entry_id = 0, $force = false)
     {
         global $wpdb;
 
@@ -380,7 +380,7 @@ function fdc_get_entries($args = array())
 function fdc_delete_entry($entry_id, $force = false)
 {
     $query = new FDC_Query();
-    $entry = $query->delete($entry_id);
+    $entry = $query->delete($entry_id, $force);
 
     if( empty($entry) ) {
         return new WP_Error('data-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
