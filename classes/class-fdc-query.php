@@ -209,8 +209,10 @@ class FDC_Query
                 $results = maybe_unserialize($results);
             });
 
-            foreach( $results as $key => $result ) {
-                $results[$key]['meta']= fdc_get_entry_meta($result['ID'], null, $this);
+            foreach( $results as $key => $result )
+            {
+                $metadata = fdc_get_entry_meta($result['ID'], null, $this);
+                $results[$key]['meta']= $metadata;
             }
 
             return $results;
@@ -307,6 +309,8 @@ function fdc_insert_entry($data = array())
 
             if( false === apply_filters('fdc_override_upload_handler', false) )
             {
+                $_entry_attachments = array();
+
                 foreach( $_FILES as $key => $values )
                 {
                     if( !in_array($key, $allowed_fields) ) {
@@ -325,6 +329,7 @@ function fdc_insert_entry($data = array())
 
                             if( !isset($file['error']) ) {
                                $attachments[]= $file;
+                               $_entry_attachments[]= $file['file'];
                             } else {
                                 $attachments[]= $file['error'];
                             }
@@ -338,10 +343,15 @@ function fdc_insert_entry($data = array())
 
                         if( !isset($file['error']) ) {
                             fdc_add_entry_meta($entry_id, $key, $file);
+                            $_entry_attachments[]= $file['file'];
                         } else {
                             fdc_add_entry_meta($entry_id, $key, $file['error']);
                         }
                     }
+                }
+
+                if( !empty($_entry_attachments) ) {
+                    fdc_add_entry_meta('_entry_attachments', $_entry_attachments);
                 }
             }
         }
