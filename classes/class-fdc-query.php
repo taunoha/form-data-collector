@@ -251,8 +251,8 @@ function fdc_insert_entry($data = array())
 
     $allowed_fields = apply_filters('fdc_allowed_entry_fields', null, $data);
 
-    if( null == $allowed_fields ) {
-        return new WP_Error('allowed-fields-missing', __('No allowed fields found', 'fdc'));
+    if( null === $allowed_fields ) {
+        return new WP_Error('allowed-fields-are-missing', __('No allowed fields found', 'fdc'));
     }
 
     $data = array_intersect_key($data, array_flip($allowed_fields));
@@ -378,6 +378,7 @@ function fdc_get_entries($args = array())
 /**
  * Filter entry data before storing in database
  *
+ * @since 2.2.0             Added an option to force delete entry and all its data
  * @since 2.2.0             Return WP_Error if some error occurred.
  * @since 2.0.0
  *
@@ -398,24 +399,21 @@ function fdc_delete_entry($entry_id, $force = false)
     //
     if( true === $force )
     {
-
         $attachments = fdc_get_entry_meta($entry_id, '_entry_attachments');
 
         if( ! $wpdb->delete($wpdb->prefix . 'fdc_entries', array('ID' => (int) $entry_id)) ) {
-            return new WP_Error('data-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
+            return new WP_Error('data-force-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
         }
 
         if( ! $wpdb->delete($wpdb->prefix . 'fdc_entries_meta', array('entry_id' => (int) $entry_id)) ) {
-            return new WP_Error('data-deletion-error', __("Unknown error occured. The entry's metadata was not deleted.", 'fdc'));
+            return new WP_Error('data-force-deletion-error', __("Unknown error occured. The entry's metadata was not deleted.", 'fdc'));
         }
 
         if( !empty($attachments) )
         {
-            $upload_dir = fdc_upload_dir();
-
             foreach( $attachments as $attachment )
             {
-                @unlink($upload_dir['path'] . '/' . basename($attachment) );
+                @unlink($attachment);
             }
         }
 

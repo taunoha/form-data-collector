@@ -26,12 +26,12 @@ function fdc_handle_upload_file($file)
         require_once( ABSPATH . 'wp-admin/includes/file.php' );
     }
 
-    add_filter('upload_dir', 'fdc_upload_dir');
+    add_filter('upload_dir', '_fdc_upload_dir');
     $movefile = wp_handle_upload($file, array(
         'test_form' => false,
         'action' => 'fdc_handle_upload'
     ));
-    remove_filter('upload_dir', 'fdc_upload_dir');
+    remove_filter('upload_dir', '_fdc_upload_dir');
 
     if( $movefile && ! isset($movefile['error']) ) {
         return $movefile;
@@ -40,7 +40,7 @@ function fdc_handle_upload_file($file)
     return $movefile;
 }
 
-function fdc_upload_dir($dir)
+function _fdc_upload_dir($dir)
 {
     $hash = get_option('fdc_upload_folder_hash', false);
 

@@ -5,6 +5,8 @@ defined('ABSPATH') or die();
  * Form Data Collector settings
  * https://wordpress.org/plugins/form-data-collector/
  *
+ * @since 2.2.0     Added data validation example
+ * @since 2.1.0     Added entries table filter example
  * @since 2.0.0
  *
  */
@@ -41,6 +43,7 @@ function fdc_pre_save_entry_data_callback($data)
         switch( $key )
         {
             case 'email':
+
                 if( is_email($value) ) {
                     $data[$key]= sanitize_email($value);
                 } else {
