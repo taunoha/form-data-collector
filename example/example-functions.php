@@ -56,10 +56,8 @@ add_filter('fdc_allowed_entry_fields', 'fdc_allowed_entry_fields_callback', 10, 
  * @since 2.0.0
  *
  */
-function fdc_pre_save_entry_data_callback($data)
+function fdc_pre_save_entry_data_callback($data, $errors)
 {
-    $errors = new WP_Error();
-
     foreach( $data as $key => $value )
     {
         switch( $key )
@@ -84,7 +82,7 @@ function fdc_pre_save_entry_data_callback($data)
 
     return $data;
 }
-add_filter('fdc_pre_save_entry_data', 'fdc_pre_save_entry_data_callback');
+add_filter('fdc_pre_save_entry_data', 'fdc_pre_save_entry_data_callback', 10, 2);
 
 function fdc_manage_entries_columns_callback($columns)
 {

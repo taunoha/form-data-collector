@@ -1,6 +1,6 @@
 <?php
 
-/*
+/**
  * Source: https://wp-mix.com/php-get-actual-ip-address/
  */
 function fdc_get_real_ip()
@@ -40,6 +40,12 @@ function fdc_handle_upload_file($file)
     return $movefile;
 }
 
+/**
+ * Generate FDC upload dir
+ *
+ * @access private
+ *
+ */
 function _fdc_upload_dir($dir)
 {
     $hash = get_option('fdc_upload_folder_hash', false);
@@ -58,7 +64,7 @@ function _fdc_upload_dir($dir)
     ));
 }
 
-/*
+/**
  * Source: http://php.net/manual/en/reserved.variables.files.php#109958
  *
  */

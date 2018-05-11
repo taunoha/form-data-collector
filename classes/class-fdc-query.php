@@ -256,6 +256,7 @@ function fdc_insert_entry($data = array())
     }
 
     $data = array_intersect_key($data, array_flip($allowed_fields));
+    $errors = new WP_Error();
 
     if( has_filter('fdc_pre_save_entry_post_data') ) {
         $data = apply_filters('fdc_pre_save_entry_post_data', $data);
@@ -268,12 +269,13 @@ function fdc_insert_entry($data = array())
          * @since 2.0.0
          *
          * @param array                     Data to be filtered
+         * @param WP_Error                  An empty WP_Error instance
          *
          * @return array|null|WP_Error      Return filtered data, NULL or WP_Error.
          *                                  By returning WP_Error you can add validation errors.
          *
          */
-        $data = apply_filters('fdc_pre_save_entry_data', $data);
+        $data = apply_filters('fdc_pre_save_entry_data', $data, $errors);
 
     } else {
 
