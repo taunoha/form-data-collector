@@ -21,6 +21,7 @@ jQuery(function($) {
         },
         toDelete: function() {
             $('#fdc-modal').dialog({
+                title: _fdcVars.str.delete_dialog_title.replace('{#}', FDC.itemID),
                 dialogClass: 'wp-dialog',
                 modal: true,
                 height: 'auto',

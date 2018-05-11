@@ -188,7 +188,8 @@ class Form_Data_Collector
             'str' => array(
                 'no_file_added' => __('No file was inserted by the user', 'fdc'),
                 'delete_this_entry' => __('Delete this entry', 'fdc'),
-                'cancel' => __('Cancel', 'fdc')
+                'cancel' => __('Cancel', 'fdc'),
+                'delete_dialog_title' => __('Entry {#}', 'fdc')
             )
         ));
     }

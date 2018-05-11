@@ -89,7 +89,7 @@ class FDC_Query
         return 0;
     }
 
-    public function delete($entry_id = 0, $force = false)
+    public function delete($entry_id = 0)
     {
         global $wpdb;
 
@@ -384,15 +384,52 @@ function fdc_get_entries($args = array())
  * @param int
  * @param bool  $force      An option to force delete the entry and all its data. Default is 'false';
  *
- * @return int|WP_Error     Return deleted entry ID or WP_Error.
+ * @return int|WP_Error     Return deleted entry ID.
+ *                          WP_Error on error.
  *
  */
 function fdc_delete_entry($entry_id, $force = false)
 {
-    $query = new FDC_Query();
-    $entry = $query->delete($entry_id, $force);
+    global $wpdb;
 
-    if( empty($entry) ) {
+    $entry = fdc_get_entries(array('ID' => (int) $entry_id, 'entries_per_page' => 1));
+
+    // Force Delete an Entry
+    //
+    if( true === $force )
+    {
+
+        $attachments = fdc_get_entry_meta($entry_id, '_entry_attachments');
+
+        if( ! $wpdb->delete($wpdb->prefix . 'fdc_entries', array('ID' => (int) $entry_id)) ) {
+            return new WP_Error('data-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
+        }
+
+        if( ! $wpdb->delete($wpdb->prefix . 'fdc_entries_meta', array('entry_id' => (int) $entry_id)) ) {
+            return new WP_Error('data-deletion-error', __("Unknown error occured. The entry's metadata was not deleted.", 'fdc'));
+        }
+
+        if( !empty($attachments) )
+        {
+            $upload_dir = fdc_upload_dir();
+
+            foreach( $attachments as $attachment )
+            {
+                @unlink($upload_dir['path'] . '/' . basename($attachment) );
+            }
+        }
+
+        do_action('fdc_after_entry_deleted', $entry_id, $entry);
+        wp_cache_delete($entry_id, 'fdc_entry_metadata');
+
+        return $entry_id;
+    }
+
+    // Delete an Entry
+    //
+    $query = new FDC_Query();
+
+    if( ! $query->delete($entry_id) ) {
         return new WP_Error('data-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
     }
 
