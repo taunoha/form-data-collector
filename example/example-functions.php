@@ -77,7 +77,7 @@ function fdc_pre_save_entry_data_callback($data, $errors)
     }
 
     if( !empty( $errors->get_error_codes() ) ) {
-        $data = $errors;
+        return $errors;
     }
 
     return $data;
