@@ -75,4 +75,12 @@ function fdc_diverse_array($vector)
 
     return $result;
 }
+/*
+ * Source: http://php.net/manual/en/function.preg-grep.php#111673
+ *
+ */
+function fdc_preg_grep_keys($pattern, $input, $flags = 0)
+{
+    return array_intersect_key($input, array_flip(preg_grep($pattern, array_keys($input), $flags)));
+}
 

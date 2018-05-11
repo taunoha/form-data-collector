@@ -212,7 +212,7 @@ class FDC_Query
             foreach( $results as $key => $result )
             {
                 $metadata = fdc_get_entry_meta($result['ID'], null, $this);
-                $results[$key]['meta']= $metadata;
+                $results[$key]['meta']= fdc_preg_grep_keys('/^[^\_]/', $metadata);
             }
 
             return $results;
@@ -351,7 +351,7 @@ function fdc_insert_entry($data = array())
                 }
 
                 if( !empty($_entry_attachments) ) {
-                    fdc_add_entry_meta('_entry_attachments', $_entry_attachments);
+                    fdc_add_entry_meta($entry_id, '_entry_attachments', $_entry_attachments);
                 }
             }
         }
