@@ -5,7 +5,7 @@ defined('ABSPATH') or die();
  * Form Data Collector settings
  * https://wordpress.org/plugins/form-data-collector/
  *
- * @since 2.2.0     Added data validation example
+ * @since 2.2.0     Added an example how validate input data
  * @since 2.1.0     Added entries table filter example
  * @since 2.0.0
  *
