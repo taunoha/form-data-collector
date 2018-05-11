@@ -126,6 +126,12 @@ class FDC_Query
         do_action_ref_array('fdc_pre_get_entries', array(&$this));
 
         $args = &$this->query_vars;
+        $limit = '';
+        $offset = '';
+        $where = '';
+        $join = '';
+        $wheres = array();
+        $joins = array();
 
         if( !empty($args['s']) )
         {
@@ -136,13 +142,6 @@ class FDC_Query
                 )
             ));
         }
-
-        $limit = '';
-        $offset = '';
-        $where = '';
-        $join = '';
-        $wheres = array();
-        $joins = array();
 
         if( !empty($args['meta_query']) )
         {
@@ -200,7 +199,7 @@ class FDC_Query
 
         $join = implode(' ', $joins);
         $where = implode(' ', $wheres);
-        $sql = apply_filters('fdc_entries_request_sql', "SELECT {$wpdb->prefix}fdc_entries.* FROM {$wpdb->prefix}fdc_entries {$join} WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit} {$offset}");
+        $sql = apply_filters('fdc_entries_request_sql', "SELECT DISTINCT {$wpdb->prefix}fdc_entries.* FROM {$wpdb->prefix}fdc_entries {$join} WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit} {$offset}");
         $results = $wpdb->get_results($sql, ARRAY_A);
 
         if( $results )

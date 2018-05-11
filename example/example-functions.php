@@ -58,21 +58,21 @@ add_filter('fdc_allowed_entry_fields', 'fdc_allowed_entry_fields_callback', 10, 
  */
 function fdc_pre_save_entry_data_callback($data, $errors)
 {
-    foreach( $data as $key => $value )
+    foreach( $data as $field => $value )
     {
-        switch( $key )
+        switch( $field )
         {
             case 'email':
 
                 if( is_email($value) ) {
-                    $data[$key]= sanitize_email($value);
+                    $data[$field]= sanitize_email($value);
                 } else {
-                    $errors->add($key, __('Email is not valid'));
+                    $errors->add($field, __('Email is not valid'));
                 }
 
                 break;
             default:
-                $data[$key]= ( is_array($value) ) ? array_map('sanitize_text_field', $value) : sanitize_text_field($value);
+                $data[$field]= ( is_array($value) ) ? array_map('sanitize_text_field', $value) : sanitize_text_field($value);
         }
     }
 
