@@ -165,7 +165,7 @@ class Form_Data_Collector
                 'nonce' => wp_create_nonce('fdc_nonce')
             ),
             'str' => array(
-                'no_file_added' => __('No file was inserted by the user', 'fdc')
+                'no_file_added' => __('No file added by the user', 'fdc')
             )
         ));
     }
