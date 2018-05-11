@@ -199,7 +199,7 @@ class FDC_Query
 
         $join = implode(' ', $joins);
         $where = implode(' ', $wheres);
-        $sql = apply_filters('fdc_entries_request_sql', "SELECT DISTINCT {$wpdb->prefix}fdc_entries.* FROM {$wpdb->prefix}fdc_entries {$join} WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit} {$offset}");
+        $sql = apply_filters('fdc_entries_request_sql', "SELECT {$wpdb->prefix}fdc_entries.* FROM {$wpdb->prefix}fdc_entries {$join} WHERE 1=1 {$where} GROUP BY {$wpdb->prefix}fdc_entries.ID ORDER BY entry_date DESC {$limit} {$offset}");
         $results = $wpdb->get_results($sql, ARRAY_A);
 
         if( $results )
