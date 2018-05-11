@@ -34,6 +34,29 @@ function fdc_entry_labels($key = '')
     return $labels;
 }
 
+function fdc_allowed_entry_fields_callback($allowed_fields, $data)
+{
+    if( !isset($data['honeypot']) ) {
+        return null;
+    }
+
+    if( !empty($data['honeypot']) ) {
+        return null;
+    }
+
+    $keys = array_keys(fdc_entry_labels());
+
+    return $keys;
+}
+add_filter('fdc_allowed_entry_fields', 'fdc_allowed_entry_fields_callback', 10, 2);
+
+/**
+ * Filter the data before storing it in database
+ *
+ * @since 2.2.0     Added an example how validate input data
+ * @since 2.0.0
+ *
+ */
 function fdc_pre_save_entry_data_callback($data)
 {
     $errors = new WP_Error();
@@ -64,22 +87,6 @@ function fdc_pre_save_entry_data_callback($data)
 }
 add_filter('fdc_pre_save_entry_data', 'fdc_pre_save_entry_data_callback');
 
-function fdc_allowed_entry_fields_callback($allowed_fields, $data)
-{
-    if( !isset($data['honeypot']) ) {
-        return null;
-    }
-
-    if( !empty($data['honeypot']) ) {
-        return null;
-    }
-
-    $keys = array_keys(fdc_entry_labels());
-
-    return $keys;
-}
-add_filter('fdc_allowed_entry_fields', 'fdc_allowed_entry_fields_callback', 10, 2);
-
 function fdc_manage_entries_columns_callback($columns)
 {
     $first = array_slice($columns, 0, 1);
@@ -93,12 +100,12 @@ function fdc_manage_entries_columns_callback($columns)
 }
 add_filter('fdc_manage_entries_columns', 'fdc_manage_entries_columns_callback');
 
-function fdc_manage_entries_custom_column_callback($item, $column_name)
+function fdc_manage_entries_custom_column_callback($entry, $column_name)
 {
     switch($column_name)
     {
         case 'formID':
-            echo $item['meta']['formID'] ?? '';
+            echo $entry['meta']['formID'] ?? '';
             break;
     }
 }
@@ -128,9 +135,9 @@ function fdc_pre_get_entries_callback($query)
 }
 add_action('fdc_pre_get_entries', 'fdc_pre_get_entries_callback');
 
-function fdc_thickbox_iframe_content_callback($entry_id, $entry_data)
+function fdc_thickbox_iframe_content_callback($entry_id, $entry)
 {
-    $data = $entry_data;
+    $data = $entry;
 
     if( !isset($data['meta']) ) {
         echo 'No metadata found for Entry ' . $entry_id;
