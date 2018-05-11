@@ -33,7 +33,7 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 
 = 2.2.0 =
 * Added an option to force delete an entry and all its data.
-* Added an option to validate input data. Uses [WP_Error](https://codex.wordpress.org/Class_Reference/WP_Error) class. Take a look at the examples.
+* Updated the functionality of inserted data validation before it is stored in database. It uses [WP_Error](https://codex.wordpress.org/Class_Reference/WP_Error) class. Take a look at the examples.
 * Improved error handling.
 
 = 2.1.1 =
