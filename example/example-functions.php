@@ -5,8 +5,7 @@ defined('ABSPATH') or die();
  * Form Data Collector settings
  * https://wordpress.org/plugins/form-data-collector/
  *
- * @since 2.2.0     Added an example how validate input data
- * @since 2.1.0     Added entries table filter example
+ * @since 2.2.0     Added an example how to validate input data
  * @since 2.0.0
  *
  */
@@ -53,7 +52,7 @@ add_filter('fdc_allowed_entry_fields', 'fdc_allowed_entry_fields_callback', 10, 
 /**
  * Filter the data before storing it in database
  *
- * @since 2.2.0     Added an example how validate input data
+ * @since 2.2.0     Added an example how to validate input data
  * @since 2.0.0
  *
  */
