@@ -419,10 +419,10 @@ function fdc_delete_entry($entry_id, $force = false)
             }
         }
 
-        do_action('fdc_after_entry_deleted', $entry_id, $entry);
+        do_action('fdc_after_entry_deleted', $entry_id, @$entry[0]);
         wp_cache_delete($entry_id, 'fdc_entry_metadata');
 
-        return $entry_id;
+        return (int) $entry_id;
     }
 
     // Delete an Entry
@@ -433,9 +433,8 @@ function fdc_delete_entry($entry_id, $force = false)
         return new WP_Error('data-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
     }
 
-    do_action('fdc_after_entry_deleted', $entry_id, $entry);
-
+    do_action('fdc_after_entry_deleted', $entry_id, @$entry[0]);
     wp_cache_delete($entry_id, 'fdc_entry_metadata');
 
-    return $entry_id;
+    return (int) $entry_id;
 }
