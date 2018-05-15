@@ -1,11 +1,4 @@
-# Form Data Collector
-
-**Contributors:** taunoh<br>
-**Donate link:** https://www.loomdigital.ee<br>
-**Tags:** form, email, forms, input, ajax, database<br>
-**Requires at least:** 4.9<br>
-**Tested up to:** 4.9.5<br>
-**Stable tag:** 2.1.1<br>
+**Stable tag:** 2.2.0<br>
 **License:** GPLv2 or later<br>
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +9,7 @@ This plugin will help you to collect and store form data.
 
 This plugin is a developer’s toolkit for collecting form data from your WordPress site. It provides the necessary hooks and utilities for you to manage how data is stored and displayed later.
 
-The best way to get started is to look at [example-functions.php](https://github.com/taunoha/form-data-collector/blob/master/example/example-functions.php) and [example.php](https://github.com/taunoha/form-data-collector/blob/master/example/example-page.php) in `/plugins/form-data-collector/example` folder.
+The best way to get started is to look at example-functions.php and example.php in `/plugins/form-data-collector/example` folder.
 
 You can see a list of utilities and hooks [here](https://github.com/taunoha/form-data-collector/wiki/).
 
@@ -31,6 +24,15 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 5. A new menu item called "FDC" will be available in Admin menu.
 
 ## Changelog
+
+### 2.2.0
+* Added an option to force delete an entry and all its data.
+* Updated how to validate inserted data before it will be inserted into database. It uses [WP_Error](https://codex.wordpress.org/Class_Reference/WP_Error) class. Take a look at the examples.
+* Improved error handling.
+
+
+### 2.1.1
+* Minor bug fixes
 
 ### 2.1.0
 * Introduced `fdc_pre_get_entries` action hook. It works like Wordpress core `pre_get_posts` action.
@@ -51,38 +53,3 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 * Renamed `restrict_manage_px_fdc` action hook to `fdc_restrict_manage_entries`
 * Removed CMB2
 * Bootstrap Modal was replaced with Thickbox
-* Started using semantic versioning
-
-### 1.3.1
-* Updated CMB2 code
-
-### 1.3.0
-* NEW: Now you can store all fields as one meta_key value and still use get_post_meta() to access them. Use the `fdc_store_fields_as_array` filter to enable this feature (Default: false).
-* Added action `fdc_overview_details_before_output`
-* added action `fdc_overview_details_after_output`
-* Updated usage info
-
-### 1.2.0
-* Introduced AJAX utility `fdc.ajax.post()` to send POST request to WordPress
-* Added filter `fdc_ajax_response_error` to filter AJAX error response
-* Added filter `fdc_ajax_response_success` to filter AJAX success response
-* Added filter `fdc_enable_email_settings` to enable or disable email settings subpage (Default: true)
-* Code clean up
-
-### 1.1.3
-* Added 'CMB2_LOADED' constant check
-
-### 1.1.2
-* WP_List_Table Class check is now in admin_init hook
-* Minor updates
-
-### 1.1.1
-* Updated usage info and some text in code.
-* Added loading state to Entry modal.
-
-### 1.1
-* Added `restrict_manage_px_fdc` action hook. Now you can add restriction filters to the Entries view. Combine this hook with `parse_query` filter to manage the output of Entries list.
-* Added date column in the Entries view is now displayed by default.
-
-### 1.0
-* Initial release.

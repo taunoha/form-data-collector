@@ -126,6 +126,12 @@ class FDC_Query
         do_action_ref_array('fdc_pre_get_entries', array(&$this));
 
         $args = &$this->query_vars;
+        $limit = '';
+        $offset = '';
+        $where = '';
+        $join = '';
+        $wheres = array();
+        $joins = array();
 
         if( !empty($args['s']) )
         {
@@ -136,13 +142,6 @@ class FDC_Query
                 )
             ));
         }
-
-        $limit = '';
-        $offset = '';
-        $where = '';
-        $join = '';
-        $wheres = array();
-        $joins = array();
 
         if( !empty($args['meta_query']) )
         {
@@ -200,7 +199,7 @@ class FDC_Query
 
         $join = implode(' ', $joins);
         $where = implode(' ', $wheres);
-        $sql = apply_filters('fdc_entries_request_sql', "SELECT {$wpdb->prefix}fdc_entries.* FROM {$wpdb->prefix}fdc_entries {$join} WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit} {$offset}");
+        $sql = apply_filters('fdc_entries_request_sql', "SELECT DISTINCT {$wpdb->prefix}fdc_entries.* FROM {$wpdb->prefix}fdc_entries {$join} WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit} {$offset}");
         $results = $wpdb->get_results($sql, ARRAY_A);
 
         if( $results )
@@ -209,8 +208,10 @@ class FDC_Query
                 $results = maybe_unserialize($results);
             });
 
-            foreach( $results as $key => $result ) {
-                $results[$key]['meta']= fdc_get_entry_meta($result['ID'], null, $this);
+            foreach( $results as $key => $result )
+            {
+                $metadata = fdc_get_entry_meta($result['ID'], null, $this);
+                $results[$key]['meta']= fdc_preg_grep_keys('/^[^\_]/', $metadata);
             }
 
             return $results;
@@ -221,6 +222,17 @@ class FDC_Query
 
 }
 
+/**
+ * Insert an entry into the database
+ *
+ * @since 2.2.0                     Improved error handling
+ * @since 2.0.0
+ *
+ * @param array $data               Data to store in database or $_POST will be used.
+ *
+ * @return int|WP_Error             Return inserted entry ID or WP_Error.
+ *
+ */
 function fdc_insert_entry($data = array())
 {
     if( empty($data) )
@@ -228,7 +240,7 @@ function fdc_insert_entry($data = array())
         if( isset($_POST) ) {
             $data = $_POST;
         } else {
-            return 0;
+            return new WP_Error('data-missing', __('Nothing to store in database.', 'fdc'));
         }
     }
 
@@ -238,17 +250,31 @@ function fdc_insert_entry($data = array())
 
     $allowed_fields = apply_filters('fdc_allowed_entry_fields', null, $data);
 
-    if( null == $allowed_fields ) {
-        return 0;
+    if( null === $allowed_fields ) {
+        return new WP_Error('allowed-fields-are-missing', __('No allowed fields found', 'fdc'));
     }
 
     $data = array_intersect_key($data, array_flip($allowed_fields));
+    $errors = new WP_Error();
 
     if( has_filter('fdc_pre_save_entry_post_data') ) {
         $data = apply_filters('fdc_pre_save_entry_post_data', $data);
 
     } else if( has_filter('fdc_pre_save_entry_data') ) {
-        $data = apply_filters('fdc_pre_save_entry_data', $data);
+        /**
+         * Filter entry data before storing in database
+         *
+         * @since 2.2.0                     Added an option to return WP_Error
+         * @since 2.0.0
+         *
+         * @param array                     Data to be filtered
+         * @param WP_Error                  An empty WP_Error instance
+         *
+         * @return array|null|WP_Error      Return filtered data, NULL or WP_Error.
+         *                                  By returning WP_Error you can add validation errors.
+         *
+         */
+        $data = apply_filters('fdc_pre_save_entry_data', $data, $errors);
 
     } else {
 
@@ -258,12 +284,12 @@ function fdc_insert_entry($data = array())
 
     }
 
-    if( empty($data) ) {
-        return 0;
-    }
-
     if( is_wp_error($data) ) {
         return $data;
+    }
+
+    if( empty($data) ) {
+        return new WP_Error('data-missing', __('Nothing to store in database.', 'fdc'));
     }
 
     $query = new FDC_Query();
@@ -284,6 +310,8 @@ function fdc_insert_entry($data = array())
 
             if( false === apply_filters('fdc_override_upload_handler', false) )
             {
+                $_entry_attachments = array();
+
                 foreach( $_FILES as $key => $values )
                 {
                     if( !in_array($key, $allowed_fields) ) {
@@ -302,6 +330,7 @@ function fdc_insert_entry($data = array())
 
                             if( !isset($file['error']) ) {
                                $attachments[]= $file;
+                               $_entry_attachments[]= $file['file'];
                             } else {
                                 $attachments[]= $file['error'];
                             }
@@ -315,10 +344,15 @@ function fdc_insert_entry($data = array())
 
                         if( !isset($file['error']) ) {
                             fdc_add_entry_meta($entry_id, $key, $file);
+                            $_entry_attachments[]= $file['file'];
                         } else {
                             fdc_add_entry_meta($entry_id, $key, $file['error']);
                         }
                     }
+                }
+
+                if( !empty($_entry_attachments) ) {
+                    fdc_add_entry_meta($entry_id, '_entry_attachments', $_entry_attachments);
                 }
             }
         }
@@ -328,7 +362,7 @@ function fdc_insert_entry($data = array())
         return $entry_id;
     }
 
-    return 0;
+    return new WP_Error('data-insertion-error', __('Unknown error occurred. No entry stored in database.', 'fdc'));
 }
 
 function fdc_get_entries($args = array())
@@ -342,18 +376,64 @@ function fdc_get_entries($args = array())
     return empty($query->entries) ? array() : $query->entries;
 }
 
-function fdc_delete_entry($entry_id)
+/**
+ * Filter entry data before storing in database
+ *
+ * @since 2.2.0             Added an option to force delete entry and all its data
+ * @since 2.2.0             Return WP_Error if some error occurred.
+ * @since 2.0.0
+ *
+ * @param int
+ * @param bool  $force      An option to force delete the entry and all its data. Default is 'false';
+ *
+ * @return int|WP_Error     Return deleted entry ID.
+ *                          WP_Error on error.
+ *
+ */
+function fdc_delete_entry($entry_id, $force = false)
 {
-    $query = new FDC_Query();
-    $entry = $query->delete($entry_id);
+    global $wpdb;
 
-    if( empty($entry) ) {
-        return 0;
+    $entry = fdc_get_entries(array('ID' => (int) $entry_id, 'entries_per_page' => 1));
+
+    // Force Delete an Entry
+    //
+    if( true === $force )
+    {
+        $attachments = fdc_get_entry_meta($entry_id, '_entry_attachments');
+
+        if( ! $wpdb->delete($wpdb->prefix . 'fdc_entries', array('ID' => (int) $entry_id)) ) {
+            return new WP_Error('data-force-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
+        }
+
+        if( ! $wpdb->delete($wpdb->prefix . 'fdc_entries_meta', array('entry_id' => (int) $entry_id)) ) {
+            return new WP_Error('data-force-deletion-error', __("Unknown error occured. The entry's metadata was not deleted.", 'fdc'));
+        }
+
+        if( !empty($attachments) )
+        {
+            foreach( $attachments as $attachment )
+            {
+                @unlink($attachment);
+            }
+        }
+
+        do_action('fdc_after_entry_deleted', $entry_id, @$entry[0]);
+        wp_cache_delete($entry_id, 'fdc_entry_metadata');
+
+        return (int) $entry_id;
     }
 
-    do_action('fdc_after_entry_deleted', $entry_id, $entry);
+    // Delete an Entry
+    //
+    $query = new FDC_Query();
 
+    if( ! $query->delete($entry_id) ) {
+        return new WP_Error('data-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
+    }
+
+    do_action('fdc_after_entry_deleted', $entry_id, @$entry[0]);
     wp_cache_delete($entry_id, 'fdc_entry_metadata');
 
-    return $entry_id;
+    return (int) $entry_id;
 }
