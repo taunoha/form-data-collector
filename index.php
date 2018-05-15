@@ -47,6 +47,7 @@ class Form_Data_Collector
         add_action('admin_enqueue_scripts', array($this, 'admin_scripts'));
         add_action('admin_print_styles', array($this, 'thickbox_iframe_css'));
         add_action('admin_print_styles', array($this, 'admin_css'));
+        add_action('admin_footer', array($this, 'admin_footer'));
         add_action('admin_action_fdc_entry_modal', array($this, 'thickbox_iframe'));
 
         $_GLOBAL['formDataCollectorAjax'] = new FDC_AJAX();
@@ -164,14 +165,19 @@ class Form_Data_Collector
                 'nonce' => wp_create_nonce('fdc_nonce')
             ),
             'str' => array(
+                'no_file_added' => __('No file added by the user', 'fdc')
             )
         ));
     }
 
     public function admin_scripts()
     {
+        wp_enqueue_script('jquery-ui-dialog');
+
         if( WP_DEBUG ) {
+            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-admin.js' , __FILE__ ), array('jquery', 'jquery-ui-dialog', 'wp-util'), null, true);
         } else {
+            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-admin.min.js' , __FILE__ ), array('jquery', 'jquery-ui-dialog', 'wp-util'), null, true);
         }
 
         wp_localize_script('fdc', '_fdcVars', array(
@@ -180,6 +186,10 @@ class Form_Data_Collector
                 'nonce' => wp_create_nonce('fdc_nonce')
             ),
             'str' => array(
+                'no_file_added' => __('No file was inserted by the user', 'fdc'),
+                'delete_this_entry' => __('Delete this entry', 'fdc'),
+                'cancel' => __('Cancel', 'fdc'),
+                'delete_dialog_title' => __('Entry {#}', 'fdc')
             )
         ));
     }
@@ -192,7 +202,20 @@ class Form_Data_Collector
             return;
         }
 
+        wp_enqueue_style('wp-jquery-ui-dialog');
         wp_enqueue_style('fdc-admin', plugins_url('/gfx/fdc-admin-styles.css' , __FILE__ ));
+    }
+
+    public function admin_footer()
+    {
+        ?>
+        <div id="fdc-delete-modal" class="hidden">
+            <form action="<?php echo esc_url(admin_url()); ?>" method="post">
+                <p><b><?php _e('Do you really want to delete this entry?', 'fdc'); ?></b></p>
+                <p><label><input type="checkbox" name="fdcForceDelete"><?php _e('Force delete this entry and all its data', 'fdc'); ?></label></p>
+            </form>
+        </div>
+        <?php
     }
 
     public function thickbox_iframe_css()
