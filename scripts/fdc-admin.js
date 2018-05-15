@@ -20,7 +20,7 @@ jQuery(function($) {
             }
         },
         toDelete: function() {
-            $('#fdc-modal').dialog({
+            $('#fdc-delete-modal').dialog({
                 title: _fdcVars.str.delete_dialog_title.replace('{#}', FDC.itemID),
                 dialogClass: 'wp-dialog',
                 modal: true,
