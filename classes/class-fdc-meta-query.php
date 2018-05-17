@@ -52,6 +52,7 @@ function fdc_add_entry_meta($entry_id, $meta_key, $meta_value)
 
     $table_name = $wpdb->prefix . 'fdc_entries_meta';
     $meta_key = wp_unslash($meta_key);
+    $meta_value = wp_unslash($meta_value);
     $meta_value = maybe_serialize($meta_value);
 
     $result = $wpdb->insert($table_name , array(
