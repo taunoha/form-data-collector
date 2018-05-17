@@ -89,6 +89,7 @@ function fdc_update_entry_meta($entry_id, $meta_key, $meta_value)
 
     $table_meta_name = $wpdb->prefix . 'fdc_entries_meta';
     $meta_key = wp_unslash($meta_key);
+    $meta_value = wp_unslash($meta_value);
     $meta_value = maybe_serialize($meta_value);
 
     $meta_id = $wpdb->get_col( $wpdb->prepare("SELECT meta_id FROM {$table_meta_name} WHERE meta_key = '%s' AND entry_id = %d", $meta_key, $entry_id) );
