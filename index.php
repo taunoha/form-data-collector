@@ -3,7 +3,7 @@
  *  Plugin Name: Form Data Collector
  *  Plugin URI: https://www.loomdigital.ee/
  *  Description: This plugin is a developer's tookit for collecting form data from your WordPress site
- *  Version: 2.2.0
+ *  Version: 2.2.1
  *  Author: LOOM Digital
  *  Author URI: https://www.loomdigital.ee/
  *  License: GPL2+
@@ -30,6 +30,8 @@ defined('ABSPATH') or die();
 
 global $fdc_db_version;
 $fdc_db_version = '1.0';
+
+define('FDC_VERSION', '2.2.1');
 
 class Form_Data_Collector
 {
@@ -154,9 +156,9 @@ class Form_Data_Collector
     public function front_scripts()
     {
         if( WP_DEBUG ) {
-            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-front.js' , __FILE__ ), array('jquery'), null, true);
+            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-front.js' , __FILE__ ), array('jquery'), FDC_VERSION, true);
         } else {
-            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-front.min.js' , __FILE__ ), array('jquery'), null, true);
+            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-front.min.js' , __FILE__ ), array('jquery'), FDC_VERSION, true);
         }
 
         wp_localize_script('fdc', '_fdcVars', array(
@@ -175,9 +177,9 @@ class Form_Data_Collector
         wp_enqueue_script('jquery-ui-dialog');
 
         if( WP_DEBUG ) {
-            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-admin.js' , __FILE__ ), array('jquery', 'jquery-ui-dialog', 'wp-util'), null, true);
+            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-admin.js' , __FILE__ ), array('jquery', 'jquery-ui-dialog', 'wp-util'), FDC_VERSION, true);
         } else {
-            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-admin.min.js' , __FILE__ ), array('jquery', 'jquery-ui-dialog', 'wp-util'), null, true);
+            wp_enqueue_script('fdc', plugins_url('/scripts/fdc-admin.min.js' , __FILE__ ), array('jquery', 'jquery-ui-dialog', 'wp-util'), FDC_VERSION, true);
         }
 
         wp_localize_script('fdc', '_fdcVars', array(

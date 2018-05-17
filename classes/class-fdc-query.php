@@ -288,19 +288,18 @@ function fdc_insert_entry($data = array())
         return $data;
     }
 
-    if( empty($data) ) {
-        return new WP_Error('data-missing', __('Nothing to store in database.', 'fdc'));
-    }
-
     $query = new FDC_Query();
     $entry_id = $query->insert();
 
     if( !empty($entry_id) )
     {
-        foreach( $data as $meta_key => $meta_value )
+        if( is_array($data) && !empty($data) )
         {
-            if( in_array($meta_key, $allowed_fields) ) {
-                fdc_add_entry_meta($entry_id, $meta_key, $meta_value);
+            foreach( $data as $meta_key => $meta_value )
+            {
+                if( in_array($meta_key, $allowed_fields) ) {
+                    fdc_add_entry_meta($entry_id, $meta_key, $meta_value);
+                }
             }
         }
 
