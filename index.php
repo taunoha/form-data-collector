@@ -3,7 +3,7 @@
  *  Plugin Name: Form Data Collector
  *  Plugin URI: https://www.loomdigital.ee/
  *  Description: This plugin is a developer's tookit for collecting form data from your WordPress site
- *  Version: 2.2.1
+ *  Version: 2.2.2
  *  Author: LOOM Digital
  *  Author URI: https://www.loomdigital.ee/
  *  License: GPL2+
@@ -31,7 +31,7 @@ defined('ABSPATH') or die();
 global $fdc_db_version;
 $fdc_db_version = '1.0';
 
-define('FDC_VERSION', '2.2.1');
+define('FDC_VERSION', '2.2.2');
 
 class Form_Data_Collector
 {
@@ -43,6 +43,7 @@ class Form_Data_Collector
         require_once(dirname( __FILE__ ) . '/classes/class-fdc-ajax.php');
 
         add_action('admin_init', array($this, 'admin_init'));
+        add_action('admin_init', array($this, 'privacy_policy_content'), 20);
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_notices', array($this, 'admin_notices'));
         add_action('wp_enqueue_scripts', array($this, 'front_scripts'));
@@ -63,6 +64,19 @@ class Form_Data_Collector
         }
 
         require_once('classes/class-fdc-list-table.php');
+    }
+
+    public function privacy_policy_content()
+    {
+        /**
+         * Add text for the site privacy policy page
+         * https://developer.wordpress.org/plugins/privacy/suggesting-text-for-the-site-privacy-policy/
+         *
+         * @since 2.2.2
+         */
+        if( function_exists('wp_add_privacy_policy_content') ) {
+            wp_add_privacy_policy_content('Form Data Collector', apply_filters('fdc_privacy_policy_content', 'Use <b>fdc_privacy_policy_content</b> filter hook to add content here.') );
+        }
     }
 
     public function add_admin_menu()
