@@ -75,7 +75,7 @@ class Form_Data_Collector
          * @since 2.2.2
          */
         if( function_exists('wp_add_privacy_policy_content') ) {
-            wp_add_privacy_policy_content('Form Data Collector', apply_filters('fdc_privacy_policy_content', 'Use <b>fdc_privacy_policy_content</b> filter hook to add content here.') );
+            wp_add_privacy_policy_content('Form Data Collector', apply_filters('fdc_privacy_policy_content', '<p>Use <b>fdc_privacy_policy_content</b> filter hook to add content here.</p>') );
         }
     }
 

@@ -35,10 +35,11 @@ class FDC_Query
 
         $entry_date = ( !empty($args['entry_date']) ) ? $args['entry_date'] : current_time('mysql');
         $blog_id = ( !empty($args['blog_id']) ) ? $args['blog_id'] : get_current_blog_id();
+        $ip = ( !empty($args['ip']) ) ? $args['ip'] : fdc_get_real_ip();
         $entry_modified_date = current_time('mysql');
         $entry_deleted = $args['entry_deleted'];
 
-        $data = compact('entry_date', 'blog_id', 'entry_modified_date', 'entry_deleted');
+        $data = compact('entry_date', 'blog_id', 'ip', 'entry_modified_date', 'entry_deleted');
 
         // Update
         //
@@ -57,8 +58,6 @@ class FDC_Query
 
         // Insert new
         //
-
-        $data['ip'] = fdc_get_real_ip();
 
         if ( false === $wpdb->insert($wpdb->prefix . 'fdc_entries', $data) ) {
             return 0;
