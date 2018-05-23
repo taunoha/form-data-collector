@@ -53,6 +53,7 @@ function fdc_add_entry_meta($entry_id, $meta_key, $meta_value)
     $table_name = $wpdb->prefix . 'fdc_entries_meta';
     $meta_key = wp_unslash($meta_key);
     $meta_value = wp_unslash($meta_value);
+    $meta_value = sanitize_meta($meta_key, $meta_value, 'fdc');
 
     $result = $wpdb->insert($table_name , array(
             'entry_id' => $entry_id,
@@ -88,9 +89,6 @@ function fdc_update_entry_meta($entry_id, $meta_key, $meta_value)
     }
 
     $table_meta_name = $wpdb->prefix . 'fdc_entries_meta';
-    $meta_key = wp_unslash($meta_key);
-    $meta_value = wp_unslash($meta_value);
-    $meta_value = maybe_serialize($meta_value);
 
     $meta_id = $wpdb->get_col( $wpdb->prepare("SELECT meta_id FROM {$table_meta_name} WHERE meta_key = '%s' AND entry_id = %d", $meta_key, $entry_id) );
 
@@ -98,11 +96,16 @@ function fdc_update_entry_meta($entry_id, $meta_key, $meta_value)
         return fdc_add_entry_meta($entry_id, $meta_key, $meta_value);
     }
 
-    $data  = compact('meta_value');
+    $meta_key = wp_unslash($meta_key);
+    $meta_value = wp_unslash($meta_value);
+    $meta_value = sanitize_meta($meta_key, $meta_value, 'fdc');
+    $meta_value = maybe_serialize($meta_value);
+
+    $data = compact('meta_value');
     $where = array('entry_id' => $entry_id, 'meta_key' => $meta_key);
     $result = $wpdb->update($table_meta_name, $data, $where);
 
-    if( !$result ) {
+    if( false === $result ) {
         return false;
     }
 
@@ -140,7 +143,7 @@ function fdc_get_entry_meta($entry_id, $meta_key = '', $context = null)
             $exclude_deleted = '';
         }
 
-        $meta_values = $wpdb->get_results( $wpdb->prepare("SELECT meta_key, meta_value FROM {$table_meta_name} WHERE entry_id = %d {$exclude_deleted}", $entry_id) );
+        $meta_values = $wpdb->get_results( $wpdb->prepare("SELECT meta_key, meta_value FROM {$table_meta_name} WHERE entry_id = %d {$exclude_deleted}", $entry_id), ARRAY_A);
         $data = wp_list_pluck($meta_values, 'meta_value', 'meta_key');
         $meta_values = array_map('maybe_unserialize', $data);
         wp_cache_set($entry_id, $meta_values, 'fdc_entry_metadata');

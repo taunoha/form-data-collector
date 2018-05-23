@@ -33,7 +33,8 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 
 = 2.2.2 =
 * Added ´fdc_privacy_policy_content´ filter to add suggested privacy policy text to the policy postbox.
-
+* Fixed an meta_value serializing bug
+* Minor bug fixes
 
 = 2.2.1 =
 * Minor bug fixes
