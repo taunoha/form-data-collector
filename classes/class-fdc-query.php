@@ -253,6 +253,7 @@ function fdc_insert_entry($data = array())
         return new WP_Error('allowed-fields-are-missing', __('No allowed fields found', 'fdc'));
     }
 
+
     $data = array_intersect_key($data, array_flip($allowed_fields));
     $errors = new WP_Error();
 
