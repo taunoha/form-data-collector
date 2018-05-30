@@ -252,7 +252,7 @@ class Form_Data_Collector
         $last_visited = get_option('_fdc_user_visited_entries', current_time('mysql'));
         $d = new DateTime($last_visited);
 
-        if( strtotime(current_time('mysql')) < $d->modify('+1 hour')->format('timestamp') ) {
+        if( strtotime(current_time('mysql')) < $d->modify('+15 minutes')->format('timestamp') ) {
             return '';
         }
 

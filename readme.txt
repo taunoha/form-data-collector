@@ -32,7 +32,7 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 == Changelog ==
 
 = 2.2.3 =
-* Added notification to admin menu if there are new entries. New entries check has 1 hour delay.
+* Added notification to admin menu if there are new entries. New entries check has 15 minutes delay.
 
 = 2.2.2 =
 * Added ´fdc_privacy_policy_content´ filter to add suggested privacy policy text to the policy postbox.
