@@ -31,7 +31,7 @@ defined('ABSPATH') or die();
 global $fdc_db_version;
 $fdc_db_version = '1.0';
 
-define('FDC_VERSION', '2.2.2');
+define('FDC_VERSION', '2.2.3');
 
 class Form_Data_Collector
 {
@@ -81,7 +81,7 @@ class Form_Data_Collector
 
     public function add_admin_menu()
     {
-        add_menu_page('FDC', 'FDC', 'manage_options', 'fdc_entries', array($this, 'entries'), 'dashicons-testimonial');
+        add_menu_page('FDC', 'FDC' . ' ' . $this->get_notification_counter(), 'manage_options', 'fdc_entries', array($this, 'entries'), 'dashicons-testimonial');
         add_submenu_page('fdc_entries', __('Entries', 'fdc'), __('Entries', 'fdc'), 'manage_options', 'fdc_entries', array($this, 'entries'));
     }
 
@@ -165,6 +165,8 @@ class Form_Data_Collector
         echo '</form>';
 
         echo '</div>';
+
+        update_option('_fdc_user_visited_entries', current_time('mysql'));
     }
 
     public function front_scripts()
@@ -240,6 +242,31 @@ class Form_Data_Collector
         {
             wp_enqueue_style('fdc-iframe', plugins_url('/gfx/fdc-iframe-styles.css' , __FILE__ ));
         }
+    }
+
+    protected function get_notification_counter()
+    {
+        global $wpdb;
+
+        $counter = '';
+        $last_visited = get_option('_fdc_user_visited_entries', current_time('mysql'));
+        $d = new DateTime($last_visited);
+
+        if( strtotime(current_time('mysql')) < $d->modify('+1 hour')->format('timestamp') ) {
+            return '';
+        }
+
+        $count = $wpdb->get_var( "SELECT count({$wpdb->prefix}fdc_entries.ID) as count FROM {$wpdb->prefix}fdc_entries WHERE {$wpdb->prefix}fdc_entries.entry_date > '{$last_visited}' AND entry_deleted NOT IN ('yes')" );
+
+        if( $count > 0 )
+        {
+            $notifications = sprintf(_n( '%s new entry', '%s new entries', $count, 'fdc'), $count);
+            $counter = sprintf('<span class="update-plugins count-%1$d"><span class="plugin-count" aria-hidden="true">%1$d</span><span class="screen-reader-text">%2$s</span></span>', $count, $notifications);
+        }
+
+        unset($d);
+
+        return $counter;
     }
 
     static function install()
