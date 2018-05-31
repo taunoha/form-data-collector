@@ -4,7 +4,7 @@
 **Tags:** form, email, forms, input, ajax, database<br>
 **Requires at least:** 4.9<br>
 **Tested up to:** 4.9.5<br>
-**Stable tag:** 2.2.3<br>
+**Stable tag:** 2.2.2<br>
 **License:** GPLv2 or later<br>
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html<br>
 
@@ -31,7 +31,7 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 
 ## Changelog
 
-### 2.2.3
+### Unreleased
 * Added notification to admin menu if there are new entries. New entries check has 15 minutes delay.
 
 ### 2.2.2
