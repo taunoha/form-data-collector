@@ -124,6 +124,10 @@ class FDC_List_Table extends WP_List_Table
         }
     }
 
+    public function no_items() {
+        _e('No entries found.', 'fdc');
+    }
+
     public function search_box($text, $input_id = 'fdc-entries-search')
     {
         if ( empty( $_REQUEST['s'] ) && !$this->has_items() ) {
