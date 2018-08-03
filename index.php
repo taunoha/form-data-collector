@@ -256,7 +256,7 @@ class Form_Data_Collector
             return '';
         }
 
-        $count = $wpdb->get_var( "SELECT count({$wpdb->prefix}fdc_entries.ID) as count FROM {$wpdb->prefix}fdc_entries WHERE {$wpdb->prefix}fdc_entries.entry_date > '{$last_visited}' AND entry_deleted NOT IN ('yes')" );
+        $count = $wpdb->get_var( "SELECT count({$wpdb->base_prefix}fdc_entries.ID) as count FROM {$wpdb->base_prefix}fdc_entries WHERE {$wpdb->base_prefix}fdc_entries.entry_date > '{$last_visited}' AND entry_deleted NOT IN ('yes')" );
 
         if( $count > 0 )
         {
@@ -279,8 +279,8 @@ class Form_Data_Collector
         if( $installed_ver != $fdc_db_version )
         {
             $max_index_length = 191;
-            $table_name = $wpdb->prefix . 'fdc_entries';
-            $table_meta_name = $wpdb->prefix . 'fdc_entries_meta';
+            $table_name = $wpdb->base_prefix . 'fdc_entries';
+            $table_meta_name = $wpdb->base_prefix . 'fdc_entries_meta';
             $charset_collate = $wpdb->get_charset_collate();
 
             $sql = "CREATE TABLE $table_name (
