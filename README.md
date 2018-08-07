@@ -32,6 +32,7 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 ## Changelog
 
 ### Unreleased
+* Improved Multisite support.
 * Added notification to admin menu if there are new entries. New entries check has 15 minutes delay.
 
 ### 2.2.2
