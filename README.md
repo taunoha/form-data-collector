@@ -1,9 +1,9 @@
 # Form Data Collector
 **Contributors:** taunoh<br>
-**Donate link:** https://www.loomdigital.ee<br>
+**Donate link:** https://klipper.ee<br>
 **Tags:** form, email, forms, input, ajax, database<br>
 **Requires at least:** 4.9<br>
-**Tested up to:** 5.0<br>
+**Tested up to:** 5.5<br>
 **Stable tag:** 2.2.2<br>
 **License:** GPLv2 or later<br>
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html<br>
