@@ -20,9 +20,6 @@ module.exports = function(grunt) {
         // Min JS
         uglify: {
             options: {
-                compress: {
-                    warnings: false
-                },
                 mangle: true,
                 preserveComments: /^!|@preserve|@license|@cc_on/i
             },
@@ -37,11 +34,13 @@ module.exports = function(grunt) {
         },
 
         // SASS
-        sass: {
+        'dart-sass': {
             options: {
                 outputStyle: 'compressed',
-                sourceComments: false,
-                sourceMap: false
+                sourceMap: false,
+                includePaths: [
+                    'node_modules'
+                ]
             },
             iframe: {
                 files: [{
@@ -57,35 +56,15 @@ module.exports = function(grunt) {
             },
         },
 
-        // PostCSS
-        postcss: {
-            options: {
-                map: false,
-                processors: [
-                    require('autoprefixer')({
-                        browsers: 'last 2 versions'
-                    }),
-                    require('postcss-placehold')(),
-                    require('postcss-flexbugs-fixes')()
-                ]
-            },
-            iframe: {
-                src: 'gfx/fdc-iframe-styles.css'
-            },
-            admin: {
-                src: 'gfx/fdc-admin-styles.css'
-            }
-        },
-
         // Watch
         watch: {
             iframe_sass: {
                 files: ['gfx/fdc-iframe-styles.scss'],
-                tasks: ['sass:iframe', 'postcss:iframe']
+                tasks: ['dart-sass:iframe']
             },
             admin_sass: {
                 files: ['gfx/fdc-admin-styles.scss'],
-                tasks: ['sass:admin', 'postcss:admin']
+                tasks: ['dart-sass:admin']
             },
             app: {
                 files: ['scripts/*.js', '!scripts/*.min.js'],
@@ -98,9 +77,8 @@ module.exports = function(grunt) {
     // Load Npm Tasks
 
     grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-sass');
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-postcss');
+    grunt.loadNpmTasks('grunt-dart-sass');
 
     // Tasks
     grunt.registerTask('dev', ['watch']);
