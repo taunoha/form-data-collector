@@ -2,7 +2,7 @@
 **Contributors:** taunoh<br>
 **Donate link:** https://klipper.ee<br>
 **Tags:** form, email, forms, input, ajax, database<br>
-**Requires at least:** 4.9<br>
+**Requires at least:** 5.5<br>
 **Tested up to:** 5.9<br>
 **Stable tag:** 2.2.2<br>
 **License:** GPLv2 or later<br>
