@@ -1,15 +1,15 @@
 <?php
 /**
  *  Plugin Name: Form Data Collector
- *  Plugin URI: https://www.loomdigital.ee/
+ *  Plugin URI: https://klipper.ee/
  *  Description: This plugin is a developer's tookit for collecting form data from your WordPress site
- *  Version: 2.2.2
- *  Author: LOOM Digital
- *  Author URI: https://www.loomdigital.ee/
+ *  Version: 2.2.3
+ *  Author: Klipper
+ *  Author URI: https://klipper.ee/
  *  License: GPL2+
  *  Text Domain: fdc
  *
- *  Copyright 2018  LOOM Digital  (email: hi@loomdigital.ee)
+ *  Copyright 2018-2022  Klipper
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License, version 2, as
@@ -29,9 +29,11 @@
 defined('ABSPATH') or die();
 
 global $fdc_db_version;
+global $wpdb;
 $fdc_db_version = '1.0';
 
-define('FDC_VERSION', '2.2.2');
+define('FDC_VERSION', '2.2.3');
+define('LD_WP_TABLE_PREFIX', $wpdb->base_prefix);
 
 class Form_Data_Collector
 {
@@ -249,6 +251,7 @@ class Form_Data_Collector
         global $wpdb;
 
         $counter = '';
+        $table_prefix = LD_WP_TABLE_PREFIX;
         $last_visited = get_option('_fdc_user_visited_entries', current_time('mysql'));
         $d = new DateTime($last_visited);
 
@@ -256,7 +259,7 @@ class Form_Data_Collector
             return '';
         }
 
-        $count = $wpdb->get_var( "SELECT count({$wpdb->base_prefix}fdc_entries.ID) as count FROM {$wpdb->base_prefix}fdc_entries WHERE {$wpdb->base_prefix}fdc_entries.entry_date > '{$last_visited}' AND entry_deleted NOT IN ('yes')" );
+        $count = $wpdb->get_var( "SELECT count({$table_prefix}fdc_entries.ID) as count FROM {$table_prefix}fdc_entries WHERE {$table_prefix}fdc_entries.entry_date > '{$last_visited}' AND entry_deleted NOT IN ('yes')" );
 
         if( $count > 0 )
         {
@@ -279,8 +282,8 @@ class Form_Data_Collector
         if( $installed_ver != $fdc_db_version )
         {
             $max_index_length = 191;
-            $table_name = $wpdb->base_prefix . 'fdc_entries';
-            $table_meta_name = $wpdb->base_prefix . 'fdc_entries_meta';
+            $table_name = LD_WP_TABLE_PREFIX . 'fdc_entries';
+            $table_meta_name = LD_WP_TABLE_PREFIX . 'fdc_entries_meta';
             $charset_collate = $wpdb->get_charset_collate();
 
             $sql = "CREATE TABLE $table_name (

@@ -2,8 +2,8 @@
 Contributors: taunoh
 Donate link: https://klipper.ee
 Tags: form, email, forms, input, ajax, database
-Requires at least: 4.9
-Tested up to: 5.5
+Requires at least: 5.5
+Tested up to: 5.9
 Stable tag: 2.2.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -32,7 +32,9 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 == Changelog ==
 
 = Unreleased =
+* Improved Multisite support.
 * Added notification to admin menu if there are new entries. New entries check has 15 minutes delay.
+
 
 = 2.2.2 =
 * Added ´fdc_privacy_policy_content´ filter to add suggested privacy policy text to the policy postbox.

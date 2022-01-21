@@ -45,7 +45,7 @@ class FDC_Query
         //
         if( !empty($args['ID']) )
         {
-            if ( false === $wpdb->update($wpdb->base_prefix . 'fdc_entries', $data, array('ID' => (int) $args['ID']) ) ) {
+            if ( false === $wpdb->update(LD_WP_TABLE_PREFIX . 'fdc_entries', $data, array('ID' => (int) $args['ID']) ) ) {
                 return 0;
             }
 
@@ -59,7 +59,7 @@ class FDC_Query
         // Insert new
         //
 
-        if ( false === $wpdb->insert($wpdb->base_prefix . 'fdc_entries', $data) ) {
+        if ( false === $wpdb->insert(LD_WP_TABLE_PREFIX . 'fdc_entries', $data) ) {
             return 0;
         }
 
@@ -132,6 +132,8 @@ class FDC_Query
         $wheres = array();
         $joins = array();
 
+        $table_prefix = LD_WP_TABLE_PREFIX;
+
         if( !empty($args['s']) )
         {
             $args['meta_query']= array_merge($args['meta_query'], array(
@@ -160,7 +162,7 @@ class FDC_Query
 
         if( !empty($args['date_query']) )
         {
-            $date_query = new WP_Date_Query( array($args['date_query']), $wpdb->base_prefix . 'fdc_entries.entry_date' );
+            $date_query = new WP_Date_Query( array($args['date_query']), LD_WP_TABLE_PREFIX . 'fdc_entries.entry_date' );
             $wheres[]= $date_query->get_sql();
 
             unset($date_query);
@@ -198,7 +200,7 @@ class FDC_Query
 
         $join = implode(' ', $joins);
         $where = implode(' ', $wheres);
-        $sql = apply_filters('fdc_entries_request_sql', "SELECT DISTINCT {$wpdb->base_prefix}fdc_entries.* FROM {$wpdb->base_prefix}fdc_entries {$join} WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit} {$offset}");
+        $sql = apply_filters('fdc_entries_request_sql', "SELECT DISTINCT {$table_prefix}fdc_entries.* FROM {$table_prefix}fdc_entries {$join} WHERE 1=1 {$where} ORDER BY entry_date DESC {$limit} {$offset}");
         $results = $wpdb->get_results($sql, ARRAY_A);
 
         if( $results )
@@ -401,11 +403,11 @@ function fdc_delete_entry($entry_id, $force = false)
     {
         $attachments = fdc_get_entry_meta($entry_id, '_entry_attachments');
 
-        if( ! $wpdb->delete($wpdb->base_prefix . 'fdc_entries', array('ID' => (int) $entry_id)) ) {
+        if( ! $wpdb->delete(LD_WP_TABLE_PREFIX . 'fdc_entries', array('ID' => (int) $entry_id)) ) {
             return new WP_Error('data-force-deletion-error', __('Unknown error occured. The entry was not deleted.', 'fdc'));
         }
 
-        if( ! $wpdb->delete($wpdb->base_prefix . 'fdc_entries_meta', array('entry_id' => (int) $entry_id)) ) {
+        if( ! $wpdb->delete(LD_WP_TABLE_PREFIX . 'fdc_entries_meta', array('entry_id' => (int) $entry_id)) ) {
             return new WP_Error('data-force-deletion-error', __("Unknown error occured. The entry's metadata was not deleted.", 'fdc'));
         }
 

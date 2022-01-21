@@ -10,7 +10,7 @@ class FDC_Meta_Query extends WP_Meta_Query
 
         $this->table_aliases = array();
 
-        $this->meta_table = $wpdb->base_prefix . 'fdc_entries_meta';
+        $this->meta_table = LD_WP_TABLE_PREFIX . 'fdc_entries_meta';
         $this->meta_id_column = sanitize_key($type . '_id');
 
         $this->primary_table = $primary_table;
@@ -33,7 +33,7 @@ function fdc_get_entries_meta_query_clauses( $query_args = array() )
     $meta_query = new FDC_Meta_Query();
     $meta_query->parse_query_vars($query_args);
 
-    return $meta_query->get_sql('entry', $wpdb->base_prefix . 'fdc_entries', 'ID', null);
+    return $meta_query->get_sql('entry', LD_WP_TABLE_PREFIX . 'fdc_entries', 'ID', null);
 }
 
 function fdc_add_entry_meta($entry_id, $meta_key, $meta_value)
@@ -50,7 +50,7 @@ function fdc_add_entry_meta($entry_id, $meta_key, $meta_value)
         return false;
     }
 
-    $table_name = $wpdb->base_prefix . 'fdc_entries_meta';
+    $table_name = LD_WP_TABLE_PREFIX . 'fdc_entries_meta';
     $meta_key = wp_unslash($meta_key);
     $meta_value = wp_unslash($meta_value);
     $meta_value = sanitize_meta($meta_key, $meta_value, 'fdc');
@@ -88,7 +88,7 @@ function fdc_update_entry_meta($entry_id, $meta_key, $meta_value)
         return false;
     }
 
-    $table_meta_name = $wpdb->base_prefix . 'fdc_entries_meta';
+    $table_meta_name = LD_WP_TABLE_PREFIX . 'fdc_entries_meta';
 
     $meta_id = $wpdb->get_col( $wpdb->prepare("SELECT meta_id FROM {$table_meta_name} WHERE meta_key = '%s' AND entry_id = %d", $meta_key, $entry_id) );
 
@@ -131,8 +131,8 @@ function fdc_get_entry_meta($entry_id, $meta_key = '', $context = null)
         return false;
     }
 
-    $table_name = $wpdb->base_prefix . 'fdc_entries';
-    $table_meta_name = $wpdb->base_prefix . 'fdc_entries_meta';
+    $table_name = LD_WP_TABLE_PREFIX . 'fdc_entries';
+    $table_meta_name = LD_WP_TABLE_PREFIX . 'fdc_entries_meta';
     $meta_values = wp_cache_get($entry_id, 'fdc_entry_metadata');
 
     if( false === $meta_values )
