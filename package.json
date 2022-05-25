@@ -2,7 +2,7 @@
   "name": "form-data-collector",
   "description": "Form Data Collector plugin's assets",
   "devDependencies": {
-    "grunt": "^1.3.0",
+    "grunt": "^1.5.3",
     "grunt-contrib-uglify": "^5.0.1",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-dart-sass": "^2.0.1",
