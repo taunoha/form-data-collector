@@ -4,7 +4,7 @@
 **Tags:** form, email, forms, input, ajax, database<br>
 **Requires at least:** 5.5<br>
 **Tested up to:** 5.9<br>
-**Stable tag:** 2.2.3<br>
+**Stable tag:** 2.2.4<br>
 **License:** GPLv2 or later<br>
 **License URI:** http://www.gnu.org/licenses/gpl-2.0.html<br>
 
@@ -34,6 +34,14 @@ You can see a list of utilities and hooks [here](https://github.com/taunoha/form
 ### Unreleased
 * Improved Multisite support.
 * Added notification to admin menu if there are new entries. New entries check has 15 minutes delay.
+
+### 2.2.4
+* Sanitize input data
+
+### 2.2.3
+* Added ´fdc_privacy_policy_content´ filter to add suggested privacy policy text to the policy postbox.
+* Fixed a meta_value serializing bug
+* Minor bug fixes
 
 ### 2.2.2
 * Added ´fdc_privacy_policy_content´ filter to add suggested privacy policy text to the policy postbox.

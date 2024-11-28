@@ -3,7 +3,7 @@
  *  Plugin Name: Form Data Collector
  *  Plugin URI: https://klipper.ee/
  *  Description: This plugin is a developer's tookit for collecting form data from your WordPress site
- *  Version: 2.2.3
+ *  Version: 2.2.4
  *  Author: Klipper
  *  Author URI: https://klipper.ee/
  *  License: GPL2+
@@ -161,7 +161,7 @@ class Form_Data_Collector
         $tableList->prepare_items();
 
         echo '<form id="fdc-enties-filter" method="get">';
-        echo '<input type="hidden" name="page" value="' . $_REQUEST['page'] . '" />';
+        echo '<input type="hidden" name="page" value="' . esc_attr($_REQUEST['page']) . '" />';
         $tableList->search_box(__('Search', 'fdc'));
         $tableList->display();
         echo '</form>';
